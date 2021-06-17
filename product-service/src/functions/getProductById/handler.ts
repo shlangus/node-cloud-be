@@ -8,6 +8,7 @@ import type { GetProductByIdEvent } from './event';
 
 export const getProductById = async ({ pathParameters }: GetProductByIdEvent): Promise<APIGatewayProxyResult> => {
   try {
+    console.log('getProductById is called. Parameters:', pathParameters);
     const product = await productService.getById(pathParameters.id);
     if (!product) {
       return formatJSONResponse(404, { message: 'Not Found' });
