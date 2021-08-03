@@ -2,6 +2,7 @@ import { handlerPath } from '@libs/handlerResolver';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
+  timeout: 120,
   events: [
     {
       http: {
