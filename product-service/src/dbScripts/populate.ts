@@ -4,6 +4,8 @@
  * These are scripts used for manual creating and populating tables
  */
 
+const addUUIDExtension = `create if not exists "uuid-ossp"`
+
 const createProducts = `
 create table products (
     id uuid primary key default uuid_generate_v4(),
@@ -33,5 +35,5 @@ insert into products (title, description, price) values
 // I just too lazy for copy-pasting uuids
 const populateStocks = `
   insert into stocks (product_id, count)
-  select id, row_number() OVER (ORDER BY id) as count from products from products
+  select id, row_number() OVER (ORDER BY id) as count from products
 `;

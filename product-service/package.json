@@ -11,8 +11,8 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
-    "@middy/core": "^1.5.2",
-    "@middy/http-json-body-parser": "^1.5.2",
+    "@middy/core": "^2.5.1",
+    "@middy/http-json-body-parser": "^2.5.1",
     "@types/pg": "^8.6.0",
     "pg": "^8.6.0",
     "serverless-openapi-documentation": "^0.4.0",

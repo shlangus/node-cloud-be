@@ -3,7 +3,6 @@ import schema from './schema';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
-  timeout: 120,
   events: [
     {
       http: {
