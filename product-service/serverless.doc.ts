@@ -1,3 +1,5 @@
+import productRequestSchema from "@functions/createProduct/schema";
+
 const errorSchema = {
   $schema: 'http://json-schema.org/draft-04/schema#',
   type: 'object',
@@ -105,6 +107,30 @@ export default {
       description: 'List of Products',
       contentType: 'application/json',
       schema: productListSchema
+    },
+    {
+      name: 'CreateProductResponse',
+      description: 'Successful product creation',
+      contentType: 'application/json',
+      schema: {
+        $schema: 'http://json-schema.org/draft-04/schema#',
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'Product identifier in form of UUID',
+          },
+        }
+      }
+    },
+    {
+      name: 'CreateProductRequest',
+      description: 'Model used for product creation',
+      contentType: 'application/json',
+      schema: {
+        $schema: 'http://json-schema.org/draft-04/schema#',
+        ...productRequestSchema
+      }
     }
   ]
 };

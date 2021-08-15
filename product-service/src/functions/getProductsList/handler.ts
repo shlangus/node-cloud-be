@@ -7,6 +7,7 @@ import { productService } from '@services/productService';
 
 export const getProductsList = async (): Promise<APIGatewayProxyResult> => {
   try {
+    console.log('getProductsList is called.');
     const products = await productService.getAll();
     return formatJSONResult(products);
   } catch (e) {
