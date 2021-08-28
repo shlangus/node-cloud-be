@@ -21,7 +21,9 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      BUCKET_NAME: { 'Ref': 'ImportUploadBucket' }
+      BUCKET_NAME: { 'Ref': 'ImportUploadBucket' },
+      SQS_URL: { 'Ref': 'CatalogItemsQueue' },
+      TOPIC_ARN: { 'Ref': 'CreateProductTopic' },
     },
     lambdaHashingVersion: '20201221',
     region: 'eu-west-1',
@@ -37,6 +39,18 @@ const serverlessConfiguration: AWS = {
       Resource: [
         { 'Fn::Join': ['', ['arn:aws:s3:::', { 'Ref': 'ImportUploadBucket' }, '/*']] }
       ]
+    }, {
+      Effect: 'Allow',
+      Action: 'sqs:SendMessage',
+      Resource: { 'Fn::GetAtt': ['CatalogItemsQueue', 'Arn'] }
+    }, {
+      Effect: 'Allow',
+      Action: 'lambda:InvokeFunction',
+      Resource: '*'
+    }, {
+      Effect: 'Allow',
+      Action: 'sns:*',
+      Resource: '*'
     }]
   },
   resources: {
@@ -58,12 +72,53 @@ const serverlessConfiguration: AWS = {
             ]
           }
         }
+      },
+      CatalogItemsQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue'
+        }
+      },
+      CreateProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic'
+        }
+      },
+      CreateProductSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'vbn-vbn15@yandex.ru',
+          TopicArn: { 'Ref': 'CreateProductTopic' },
+          Protocol: 'email'
+        }
+      },
+      FilteredCreateProductSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'andrei_mitrofanov1@epam.com',
+          TopicArn: { 'Ref': 'CreateProductTopic' },
+          Protocol: 'email',
+          FilterPolicy: {
+            title: ['test', 'Test']
+          }
+        }
       }
     },
     Outputs: {
       ImportUploadBucketOutput: {
         Value: {
           Ref: 'ImportUploadBucket'
+        }
+      },
+      CatalogItemsQueue: {
+        Value: {
+          Ref: 'CatalogItemsQueue'
+        }
+      },
+      CreateProductTopic: {
+        Value: {
+          Ref: 'CreateProductTopic'
         }
       }
     }

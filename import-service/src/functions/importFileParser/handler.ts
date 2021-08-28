@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { S3 } from 'aws-sdk';
+import { S3, SQS } from 'aws-sdk';
 import { S3Event } from 'aws-lambda';
 import csv from 'csv-parser';
 
@@ -8,6 +8,7 @@ export const importFileParser = async (event: S3Event): Promise<number> => {
   try {
     console.log('importFileParser is called. Event:', event);
     const s3 = new S3({ region: process.env.AWS_REGION });
+    const sqs = new SQS({ region: process.env.AWS_REGION });
     const bucket = process.env.BUCKET_NAME;
 
     if (!event?.Records?.length) {
@@ -27,6 +28,14 @@ export const importFileParser = async (event: S3Event): Promise<number> => {
 
     for await (const data of stream) {
       console.log(data);
+      try {
+        await sqs.sendMessage({
+          QueueUrl: process.env.SQS_URL,
+          MessageBody: JSON.stringify(data)
+        }).promise();
+      } catch (e) {
+        console.log('cannot send message', e?.toString());
+      }
     }
 
     console.log(`finish processing ${key}`);
