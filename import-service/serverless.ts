@@ -103,6 +103,21 @@ const serverlessConfiguration: AWS = {
             title: ['test', 'Test']
           }
         }
+      },
+      // https://github.com/serverless/serverless/issues/3896#issuecomment-333910525
+      // https://www.serverless.com/blog/cors-api-gateway-survival-guide/#cors-with-custom-authorizers
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseType: 'DEFAULT_4XX',
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': `'*'`,
+            'gatewayresponse.header.Access-Control-Allow-Headers': `'*'`
+          },
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+        }
       }
     },
     Outputs: {
