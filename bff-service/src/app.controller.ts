@@ -24,7 +24,7 @@ export class AppController {
               private readonly http: HttpService) {
   }
 
-  @Get('/product')
+  @Get('/products')
   @UseInterceptors(CacheInterceptor)
   getProductList() {
     return this.http.get(this.appService.getServiceUrl('products'))
